@@ -1,0 +1,22 @@
+<style type="text/css">
+   #map {
+   height: 400px;
+   width: 100%;
+   }
+   .weather_mstp {
+   color: <?php
+      echo $color_weather;
+      ?>;
+   font-size: <?php
+      echo $font_size_weather;
+      ?>;
+   }
+   .title_weather_mstp {
+   color: <?php
+      echo $color_title;
+      ?>;
+   font-size: <?php
+      echo $font_size_title;
+      ?>;
+   }
+</style>
