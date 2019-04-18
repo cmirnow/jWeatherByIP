@@ -30,11 +30,7 @@ class ModJWeatherByIp
 {
     public static function getStart($params)
     {
-        if ($params->get('api_choose') == 1)
-        {
-            $loc_array = self::getRestsxgeo($params);
-        }
-        elseif ($params->get('api_choose') == 2)
+        if ($params->get('api_choose') == 2)
         {
             $loc_array = array(
                 self::getIpgeoloc($params) ["latitude"],
@@ -154,34 +150,20 @@ class ModJWeatherByIp
         return $_SERVER['REMOTE_ADDR'];
     }
 
-    public static function getRestsxgeo($params)
-    {
-        $api_key_sypexgeo = $params->get('api_key_sypexgeo');
-        $city = simplexml_load_file('http://api.sypexgeo.net/' . $api_key_sypexgeo . '/xml/' . self::getIp($params))
-            ->ip->city;
-
-        if (self::getLang($params) == "ru")
-        {
-            $name_city = $city->name_ru;
-        }
-        else
-        {
-            $name_city = $city->name_en;
-        }
-
-        $loc_array = array(
-            $city->lat,
-            $city->lon,
-            $name_city
-        );
-        return $loc_array;
-    }
-
     public static function getSxgeo($params)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'] . "/modules/mod_jweather_by_ip/src/SxGeo.php";
-        $SxGeo = new SxGeo('modules/mod_jweather_by_ip/SxGeoCity.dat');
-        $city = (Object)$SxGeo->get(self::getIp($params)) ['city'];
+        if ($params->get('api_choose') == 1)
+        {
+            $api_key_sypexgeo = $params->get('api_key_sypexgeo');
+            $city = simplexml_load_file('http://api.sypexgeo.net/' . $api_key_sypexgeo . '/xml/' . self::getIp($params))
+                ->ip->city;
+        }
+        elseif ($params->get('api_choose') == 0)
+        {
+            require_once $_SERVER['DOCUMENT_ROOT'] . "/modules/mod_jweather_by_ip/src/SxGeo.php";
+            $SxGeo = new SxGeo('modules/mod_jweather_by_ip/SxGeoCity.dat');
+            $city = (Object)$SxGeo->get(self::getIp($params)) ['city'];
+        }
 
         if (self::getLang($params) == "ru")
         {
