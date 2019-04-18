@@ -28,45 +28,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 defined('_JEXEC') or die('Restricted access');
 class ModJWeatherByIp
 {
-
     public static function getStart($params)
     {
-        $ip = $_SERVER['REMOTE_ADDR'];
         if ($params->get('api_choose') == 1)
         {
-            $api_key_sypexgeo = $params->get('api_key_sypexgeo');
-            $city = simplexml_load_file('http://api.sypexgeo.net/' . $api_key_sypexgeo . '/xml/' . $ip)
-                ->ip->city;
+            $loc_array = self::getRestsxgeo($params);
+        }
+        elseif ($params->get('api_choose') == 2)
+        {
             $loc_array = array(
-                $city->lat,
-                $city->lon
+                self::getIpgeoloc($params) ["latitude"],
+                self::getIpgeoloc($params) ["longitude"],
+                self::getIpgeoloc($params) ["city"]
             );
         }
         else
         {
-            require_once $_SERVER['DOCUMENT_ROOT'] . "/modules/mod_jweather_by_ip/src/SxGeo.php";
-            $SxGeo = new SxGeo('modules/mod_jweather_by_ip/SxGeoCity.dat');
-            $city = (Object)$SxGeo->get($ip) ['city'];
-            $loc_array = array(
-                $city->lat,
-                $city->lon
-            );
+            $loc_array = self::getSxgeo($params);
+
         }
-        $loc_safe = array();
-        foreach ($loc_array as $loc)
-        {
-            $loc_safe[] = urlencode($loc);
-        }
-        if (ModJWeatherByIp::getLang($params) == "ru")
-        {
-            $name_city = $city->name_ru;
-        }
-        else
-        {
-            $name_city = $city->name_en;
-        }
-        array_push($loc_safe, $name_city);
-        return $loc_safe;
+        return $loc_array;
     }
 
     public static function getSource($params)
@@ -75,7 +56,7 @@ class ModJWeatherByIp
         {
             $api_key = $params->get('api_key_owm');
             $num_of_days = 1;
-            $json = file_get_contents('http://api.openweathermap.org/data/2.5/weather?lat=' . ModJWeatherByIp::getStart($params) [0] . '&lon=' . ModJWeatherByIp::getStart($params) [1] . '&appid=' . $api_key . '&units=metric');
+            $json = file_get_contents('http://api.openweathermap.org/data/2.5/weather?lat=' . self::getStart($params) [0] . '&lon=' . self::getStart($params) [1] . '&appid=' . $api_key . '&units=metric');
             $obj = json_decode($json, true);
             return [$obj['weather']['0']['icon'], $obj['weather']['0']['main'], $obj['main']['temp'], $obj['wind']['speed'], $obj['main']['pressure'], $obj['main']['humidity'], $obj['clouds']['all'], $obj['visibility'], $obj['weather']['0']['description']];
         }
@@ -83,7 +64,7 @@ class ModJWeatherByIp
         {
             $api_key = $params->get('api_key');
             $num_of_days = 1;
-            $coord = ModJWeatherByIp::getStart($params);
+            $coord = self::getStart($params);
             unset($coord[2]);
             $loc_string = implode(',', $coord);
             $basicurl = sprintf('http://api2.worldweatheronline.com/premium/v1/weather.ashx?key=%s&q=%s&num_of_days=%s', $api_key, $loc_string, intval($num_of_days));
@@ -166,6 +147,84 @@ class ModJWeatherByIp
     {
         $lang = JFactory::getLanguage()->getTag();
         return substr($lang, 0, 2);
+    }
+
+    public static function getIp($params)
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    public static function getRestsxgeo($params)
+    {
+        $api_key_sypexgeo = $params->get('api_key_sypexgeo');
+        $city = simplexml_load_file('http://api.sypexgeo.net/' . $api_key_sypexgeo . '/xml/' . self::getIp($params))
+            ->ip->city;
+
+        if (self::getLang($params) == "ru")
+        {
+            $name_city = $city->name_ru;
+        }
+        else
+        {
+            $name_city = $city->name_en;
+        }
+
+        $loc_array = array(
+            $city->lat,
+            $city->lon,
+            $name_city
+        );
+        return $loc_array;
+    }
+
+    public static function getSxgeo($params)
+    {
+        require_once $_SERVER['DOCUMENT_ROOT'] . "/modules/mod_jweather_by_ip/src/SxGeo.php";
+        $SxGeo = new SxGeo('modules/mod_jweather_by_ip/SxGeoCity.dat');
+        $city = (Object)$SxGeo->get(self::getIp($params)) ['city'];
+
+        if (self::getLang($params) == "ru")
+        {
+            $name_city = $city->name_ru;
+        }
+        else
+        {
+            $name_city = $city->name_en;
+        }
+
+        $loc_array = array(
+            $city->lat,
+            $city->lon,
+            $name_city
+        );
+        return $loc_array;
+    }
+
+    public static function getIpgeoloc($params)
+    {
+        $apiKey = $params->get('api_key_geoloc');
+
+        if (self::getLang($params) == "ru")
+        {
+            $lang = "ru";
+        }
+        else
+        {
+            $lang = "en";
+        }
+
+        $fields = "*";
+        $excludes = "";
+        $url = "https://api.ipgeolocation.io/ipgeo?apiKey=" . $apiKey . "&ip=" . self::getIp($params) . "&lang=" . $lang . "&fields=" . $fields . "&excludes=" . $excludes;
+        $cURL = curl_init();
+        curl_setopt($cURL, CURLOPT_URL, $url);
+        curl_setopt($cURL, CURLOPT_HTTPGET, true);
+        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ));
+        return json_decode(curl_exec($cURL) , true);
     }
 
 }

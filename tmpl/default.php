@@ -56,7 +56,6 @@
    $html .= "</table>";
    if ($params->get('google_map') == 0) {
    echo $html;
-   echo '</div>';
    } else {
    ?>
 <div id="map"></div>
@@ -72,7 +71,7 @@
      
          '<div id="bodyContent">'+
          '<p><?php echo $html ?></p>'+
-         '</div>';
+         '</div></div>';
    
      var infowindow = new google.maps.InfoWindow({
        content: contentString
