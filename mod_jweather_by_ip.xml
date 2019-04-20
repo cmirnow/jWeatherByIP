@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="module" version="2.5.0" method="upgrade">
    <name>jWeather by ip</name>
-   <creationDate>April 18, 2019</creationDate>
+   <creationDate>April 21, 2019</creationDate>
    <author>Masterpro project</author>
    <authorEmail>info@masterpro.ws</authorEmail>
    <authorUrl>http://www.masterpro.ws</authorUrl>
    <copyright>Copyright 2015 Alexey Smirnov. All rights reserved.</copyright>
    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-   <version>1.11</version>
+   <version>1.12</version>
    <description><![CDATA[<p><a href="http://masterpro.ws" target="_blank"><img style="margin-bottom: 15px; margin-top: 15px;" src="/modules/mod_jweather_by_ip/img/logo.png" alt="Masterpro.ws" /></a></p>
 <p><strong>jWeather by ip</strong></p>
 <p>The module <strong>jWeather by ip</strong> allows you to choose between WorldWeatherOnline and OpenWeatherMap, and between IPGeolocation.io, REST API SypexGeo and binary file SypexGeo. SypexGeo distributed under the BSD license, it is absolutely free.</p>
-<p>jWeatherByIP v.1.9 version includes the ability to show the weather on the Google map.</p>
+<p>Starting from v.1.9, jWeatherByIP is includes the ability to show the weather on the Google Map.</p>
 <p>Each user without registering gets a 10 000 requests per month to REST API (identification by IP). When you register (it's free) on the site is given a unique key for accounting requests, as well as at the expense of added bonus requests (30 000 per month).</p>
 <p><strong>Getting Started, step by step:</strong></p>
 <ol>
@@ -44,6 +44,11 @@
    <config>
       <fields name="params">
          <fieldset name="basic">
+            <field name="google_map" type="radio" default="0" label="GOOGLEMAP" description="GOOGLEMAP_DESC" class="btn-group">
+               <option value="0">Нет</option>
+               <option value="20">Да</option>
+            </field>
+            <field type="spacer" hr="true" />
             <field name="api_choose" type="list" default="1" label="Select API" description="CHOOSE_DESK">
                <option value="0">SypexGeo local</option>
                <option value="1">SypexGeo REST API</option>
@@ -53,48 +58,40 @@
                <option value="0">WorldWeatherOnline</option>
                <option value="1">OpenWeatherMap</option>
             </field>
-            <field type="spacer" hr="true" />
-            <field name="api_key" type="text" default="" label="API_KEY" description="API_KEY_DESC" />
-            <field type="spacer" hr="true" />
-            <field name="api_key_sypexgeo" type="text" default="" label="SGKEY" description="SGKEY_DESK" />
-            <field type="spacer" hr="true" />
-            <field name="api_key_owm" type="text" default="" label="OPENWEATHERMAP_KEY" description="OPENWEATHERMAP_DESK" />
-            <field type="spacer" hr="true" />
-            <field type="spacer" hr="true" />
-            <field name="api_key_geoloc" type="text" default="" label="IPGEOLOCATION_KEY" description="IPGEOLOCATION_DESK" />
-            <field type="spacer" hr="true" />
-            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" />
+            <field name="api_key" type="text" default="" label="API_KEY" description="API_KEY_DESC" showon="weather_source_choose:0" />
+            <field name="api_key_sypexgeo" type="text" default="" label="SGKEY" description="SGKEY_DESK" showon="api_choose:1" />
+            <field name="api_key_owm" type="text" default="" label="OPENWEATHERMAP_KEY" description="OPENWEATHERMAP_DESK" showon="weather_source_choose:1" />
+            <field name="api_key_geoloc" type="text" default="" label="IPGEOLOCATION_KEY" description="IPGEOLOCATION_DESK" showon="api_choose:2" />
+            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" showon="google_map:20" />
          </fieldset>
          <fieldset name="Greeting">
             <field name="greeting" type="radio" default="1" label="GREETING" description="GREETING_DESC" class="btn-group">
                <option value="0">Нет</option>
                <option value="1">Да</option>
             </field>
-            <field type="spacer" hr="true" />
-            <field name="good_day" type="text" default="Good day, " label="GOOD_DAY" description="GOOD_DAY_DESC" />
-            <field name="good_evening" type="text" default="Good evening, " label="GOOD_EVENING" description="GOOD_EVENING_DESC" />
-            <field name="good_night" type="text" default="Good night, " label="GOOD_NIGHT" description="GOOD_NIGHT_DESC" />
-            <field name="good_morning" type="text" default="Good morning, " label="GOOD_MORNING" description="GOOD_MORNING_DESC" />
-            <field type="spacer" hr="true" />
-            <field name="color_title" type="color" default="#e3e388" label="COLOR_FONT_GREETING" description="COLOR_FONT_GREETING_DESC" />
-            <field name="font_size_title" type="text" default="110%" label="FONT_SIZE_GREETING" description="FONT_SIZE_GREETING_DESC" />
             <field name="color_weather" type="color" default="#caebe4" label="COLOR_FONT" description="COLOR_FONT_DESC" />
-            <field name="font_size_weather" type="text" default="90%" label="FONT_SIZE_WEATHER" description="FONT_SIZE_WEATHER_DESC" />
+            <field name="font_size_weather" type="text" default="90%" label="FONT_SIZE_WEATHER" description="FONT_SIZE_WEATHER_DESC" showon="google_map:0" />
+            <field name="good_day" type="text" default="Good day, " label="GOOD_DAY" description="GOOD_DAY_DESC" showon="greeting:1" />
+            <field name="good_evening" type="text" default="Good evening, " label="GOOD_EVENING" description="GOOD_EVENING_DESC" showon="greeting:1" />
+            <field name="good_night" type="text" default="Good night, " label="GOOD_NIGHT" description="GOOD_NIGHT_DESC" showon="greeting:1" />
+            <field name="good_morning" type="text" default="Good morning, " label="GOOD_MORNING" description="GOOD_MORNING_DESC" showon="greeting:1" />
+            <field name="color_title" type="color" default="#e3e388" label="COLOR_FONT_GREETING" description="COLOR_FONT_GREETING_DESC" showon="greeting:1" />
+            <field name="font_size_title" type="text" default="110%" label="FONT_SIZE_GREETING" description="FONT_SIZE_GREETING_DESC" showon="greeting:1" />
          </fieldset>
          <fieldset name="weather_display_options">
             <field name="img" type="radio" default="1" label="DISPLAY_IMG" description="DISPLAY_IMG_DESC" class="btn-group">
                <option value="0">Нет</option>
                <option value="1">Да</option>
             </field>
-            <field name="title" type="radio" default="1" label="DISPLAY_TITLE" description="DISPLAY_TITLE_DESK" class="btn-group">
+            <field name="title" type="radio" default="0" label="DISPLAY_TITLE" description="DISPLAY_TITLE_DESK" class="btn-group">
                <option value="0">Нет</option>
                <option value="2">Да</option>
             </field>
-            <field name="temp_C" type="radio" default="1" label="TEMPERC" description="TEMPERC_DESC" class="btn-group">
+            <field name="temp_C" type="radio" default="0" label="TEMPERC" description="TEMPERC_DESC" class="btn-group">
                <option value="0">Нет</option>
                <option value="3">Да</option>
             </field>
-            <field name="windspeedKmph" type="radio" default="1" label="WINDSPEED" description="WINDSPEED_DESC" class="btn-group">
+            <field name="windspeedKmph" type="radio" default="0" label="WINDSPEED" description="WINDSPEED_DESC" class="btn-group">
                <option value="0">Нет</option>
                <option value="4">Да</option>
             </field>
@@ -114,41 +111,34 @@
                <option value="0">Нет</option>
                <option value="8">Да</option>
             </field>
-            <field name="weatherDesc" type="radio" default="1" label="WEATHER_IN_TWO_WORDS" description="WEATHER_DESC" class="btn-group">
+            <field name="weatherDesc" type="radio" default="0" label="WEATHER_IN_TWO_WORDS" description="WEATHER_DESC" class="btn-group">
                <option value="0">Нет</option>
                <option value="9">Да</option>
             </field>
-         </fieldset>
-         <fieldset name="ADDITIONAL_FEATURES">
-            <field name="sunrise" type="radio" default="0" label="SUNRISE" description="SUNRISE_DESC" class="btn-group">
-               <option value="0">Нет</option>
-               <option value="10">Да</option>
-            </field>
-            <field name="sunset" type="radio" default="0" label="SUNSET" description="SUNSET_DESC" class="btn-group">
-               <option value="0">Нет</option>
-               <option value="11">Да</option>
-            </field>
-            <field name="moonrise" type="radio" default="0" label="MOONRISE" description="MOONRISE_DESC" class="btn-group">
-               <option value="0">Нет</option>
-               <option value="12">Да</option>
-            </field>
-            <field name="moonset" type="radio" default="0" label="MOONSET" description="MOONSET_DESC" class="btn-group">
-               <option value="0">Нет</option>
-               <option value="13">Да</option>
-            </field>
             <field type="spacer" hr="true" />
-            <field name="date" type="radio" default="1" label="TODAYSDATE" description="TODAYSDATE_DESC" class="btn-group">
-               <option value="0">Нет</option>
-               <option value="14">Да</option>
-            </field>
-            <field name="temp_F" type="radio" default="0" label="TEMPERF" description="TEMPERF_DESC" class="btn-group">
+            <field name="temp_F" type="radio" default="0" label="TEMPERF" description="TEMPERF_DESC" class="btn-group" showon="weather_source_choose:0">
                <option value="0">Нет</option>
                <option value="15">Да</option>
             </field>
-            <field type="spacer" hr="true" />
-            <field name="google_map" type="radio" default="0" label="GOOGLEMAP" description="GOOGLEMAP_DESC" class="btn-group">
+            <field name="date" type="radio" default="0" label="TODAYSDATE" description="TODAYSDATE_DESC" class="btn-group" showon="weather_source_choose:0">
                <option value="0">Нет</option>
-               <option value="20">Да</option>
+               <option value="14">Да</option>
+            </field>
+            <field name="sunrise" type="radio" default="0" label="SUNRISE" description="SUNRISE_DESC" class="btn-group" showon="weather_source_choose:0">
+               <option value="0">Нет</option>
+               <option value="10">Да</option>
+            </field>
+            <field name="sunset" type="radio" default="0" label="SUNSET" description="SUNSET_DESC" class="btn-group" showon="weather_source_choose:0">
+               <option value="0">Нет</option>
+               <option value="11">Да</option>
+            </field>
+            <field name="moonrise" type="radio" default="0" label="MOONRISE" description="MOONRISE_DESC" class="btn-group" showon="weather_source_choose:0">
+               <option value="0">Нет</option>
+               <option value="12">Да</option>
+            </field>
+            <field name="moonset" type="radio" default="0" label="MOONSET" description="MOONSET_DESC" class="btn-group" showon="weather_source_choose:0">
+               <option value="0">Нет</option>
+               <option value="13">Да</option>
             </field>
          </fieldset>
          <fieldset name="advanced">
