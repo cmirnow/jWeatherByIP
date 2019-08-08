@@ -38,9 +38,13 @@
    $i = 1;
    if (in_array(1, $values)) {
    if ($params->get('weather_source_choose') == 1) {
-   $html .= '<tr><td> <img src="https://openweathermap.org/img/w/'.$source[0].'.png" title=' .$source[1]. ' ></td></tr>';
-   } else {
-   $html .= '<tr><td> <img src="' .$source[0]. '" title=' .$source[1]. ' ></td></tr>';
+   $html .= '<tr><td><img src="https://openweathermap.org/img/w/'.$source[0].'.png" title="'.$source[1].'"></td></tr>';
+   }
+   elseif ($params->get('weather_source_choose') == 2) {
+   $html .= '<tr><td><img src="/modules/mod_jweather_by_ip/img/icons/'.$source[0].'.png" title="'.$source[1].'"></td></tr>';
+   }
+   else {
+   $html .= '<tr><td><img src="'.$source[0].'" title="'.$source[1].'"></td></tr>';
    }
    }
    foreach (array_combine($names, $source) as $names =>  $source):
@@ -50,7 +54,6 @@
        $html .= "<td>".$source."</td>";
        }
        $html .= "</tr>";
-   
        $i++;
    endforeach;
    $html .= "</table>";
@@ -66,17 +69,13 @@
        zoom: 8,
        center: coord
      });
-   
      var contentString = '<div id="content">'+
-     
          '<div id="bodyContent">'+
          '<p><?php echo $html ?></p>'+
          '</div></div>';
-   
      var infowindow = new google.maps.InfoWindow({
        content: contentString
      });
-   
      var marker = new google.maps.Marker({
        position: coord,
        map: map

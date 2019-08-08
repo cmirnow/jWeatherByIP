@@ -41,7 +41,6 @@ class ModJWeatherByIp
         else
         {
             $loc_array = self::getSxgeo($params);
-
         }
         return $loc_array;
     }
@@ -55,6 +54,13 @@ class ModJWeatherByIp
             $json = file_get_contents('http://api.openweathermap.org/data/2.5/weather?lat=' . self::getStart($params) [0] . '&lon=' . self::getStart($params) [1] . '&appid=' . $api_key . '&units=metric');
             $obj = json_decode($json, true);
             return [$obj['weather']['0']['icon'], $obj['weather']['0']['main'], $obj['main']['temp'], $obj['wind']['speed'], $obj['main']['pressure'], $obj['main']['humidity'], $obj['clouds']['all'], $obj['visibility'], $obj['weather']['0']['description']];
+        }
+        elseif ($params->get('weather_source_choose') == 2)
+        {
+            $api_key = $params->get('api_key_dsky');
+            $json = file_get_contents('https://api.darksky.net/forecast/' . $api_key . '/' . self::getStart($params) [0] . ',' . self::getStart($params) [1] . '?units=auto&exclude=minutely,hourly,daily,alerts,flags');
+            $obj = json_decode($json, true);
+            return [$obj['currently']['icon'], $obj['currently']['summary'], $obj['currently']['temperature'], $obj['currently']['windSpeed'], $obj['currently']['pressure'], $obj['currently']['humidity'], $obj['currently']['cloudCover'], $obj['currently']['visibility'], $obj['currently']['summary']];
         }
         else
         {
@@ -90,23 +96,8 @@ class ModJWeatherByIp
 
     public static function getNames($params)
     {
-        if ($params->get('weather_source_choose') == 1)
+        if ($params->get('weather_source_choose') == 0)
         {
-            return array(
-                JText::_('WEATHER_ICON') ,
-                JText::_('WEATHER_MAIN') ,
-                JText::_('TEMPERC') ,
-                JText::_('WINDSPEEDKMPH_FR') ,
-                JText::_('PRESSURE_FR') ,
-                JText::_('HUMIDITY_FR') ,
-                JText::_('CLOUDCOVER_FR') ,
-                JText::_('VISIBILITY_FR') ,
-                JText::_('WEATHER_DESC')
-            );
-        }
-        else
-        {
-
             return array(
                 JText::_('WEATHER_ICON') ,
                 JText::_('WEATHER_MAIN') ,
@@ -125,17 +116,31 @@ class ModJWeatherByIp
                 JText::_('TEMPER_FR')
             );
         }
+        else
+        {
+            return array(
+                JText::_('WEATHER_ICON') ,
+                JText::_('WEATHER_MAIN') ,
+                JText::_('TEMPERC') ,
+                JText::_('WINDSPEEDKMPH_FR') ,
+                JText::_('PRESSURE_FR') ,
+                JText::_('HUMIDITY_FR') ,
+                JText::_('CLOUDCOVER_FR') ,
+                JText::_('VISIBILITY_FR') ,
+                JText::_('WEATHER_DESC')
+            );
+        }
     }
 
     public static function getValues($params)
     {
-        if ($params->get('weather_source_choose') == 1)
+        if ($params->get('weather_source_choose') == 0)
         {
-            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') ];
+            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') , $params->get('sunrise') , $params->get('sunset') , $params->get('moonrise') , $params->get('moonset') , $params->get('date') , $params->get('temp_F') ];
         }
         else
         {
-            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') , $params->get('sunrise') , $params->get('sunset') , $params->get('moonrise') , $params->get('moonset') , $params->get('date') , $params->get('temp_F') ];
+            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') ];
         }
     }
 
