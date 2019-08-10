@@ -30,17 +30,24 @@ class ModJWeatherByIp
 {
     public static function getStart($params)
     {
-        if ($params->get('api_choose') == 2)
+        $x = $params->get('api_choose');
+        switch ($x)
         {
-            $loc_array = array(
-                self::getIpgeoloc($params) ["latitude"],
-                self::getIpgeoloc($params) ["longitude"],
-                self::getIpgeoloc($params) ["city"]
-            );
-        }
-        else
-        {
-            $loc_array = self::getSxgeo($params);
+            case 2:
+                $loc_array = array(
+                    self::getIpgeoloc($params) ["latitude"],
+                    self::getIpgeoloc($params) ["longitude"],
+                    self::getIpgeoloc($params) ["city"]
+                );
+            break;
+            case 3:
+                $loc_array = [$params->get('lat') , $params->get('lon') ];
+            break;
+            case 4:
+                $loc_array = self::getIpGeoplugin($params);
+            break;
+            default:
+                $loc_array = self::getSxgeo($params);
         }
         return $loc_array;
     }
@@ -212,6 +219,13 @@ class ModJWeatherByIp
             'Accept: application/json'
         ));
         return json_decode(curl_exec($cURL) , true);
+    }
+
+    public static function getIpGeoplugin($params)
+    {
+        $json = file_get_contents('http://www.geoplugin.net/json.gp?ip=' . self::getIp($params));
+        $obj = json_decode($json, true);
+        return [$obj['geoplugin_latitude'], $obj['geoplugin_longitude'], $obj['geoplugin_city']];
     }
 
 }
