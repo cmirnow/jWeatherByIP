@@ -35,6 +35,12 @@ $good_day     = $params->get('good_day');
 $good_evening = $params->get('good_evening');
 $good_night   = $params->get('good_night');
 $good_morning = $params->get('good_morning');
+$height_map = $params->get('height_map');
+$api_yandexmap = $params->get('api_yandexmap');
+$api_googlemap = $params->get('api_googlemap');
+$weather_source_choose = $params->get('weather_source_choose');
+$greeting = $params->get('greeting');
+$map = $params->get('map');
 
 $start = ModJWeatherByIp::getStart($params);
 $names = ModJWeatherByIp::getNames($params);

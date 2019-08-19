@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="module" version="2.5.0" method="upgrade">
    <name>jWeather by ip</name>
-   <creationDate>August 10, 2019</creationDate>
+   <creationDate>August 19, 2019</creationDate>
    <author>Masterpro project</author>
    <authorEmail>info@masterpro.ws</authorEmail>
    <authorUrl>http://www.masterpro.ws</authorUrl>
    <copyright>Copyright 2015 Alexey Smirnov. All rights reserved.</copyright>
    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-   <version>1.14</version>
+   <version>1.16</version>
    <description><![CDATA[<p><a href="http://masterpro.ws" target="_blank"><img style="margin-bottom: 15px; margin-top: 15px;" src="/modules/mod_jweather_by_ip/img/logo.png" alt="Masterpro.ws" /></a></p>
-<p><strong>jWeather by ip</strong></p>
-<p>The module <strong>jWeather by ip</strong> allows you to choose between WorldWeatherOnline, Dark Sky and OpenWeatherMap, and between IPGeolocation.io, REST API SypexGeo and binary file SypexGeo. SypexGeo distributed under the BSD license, it is absolutely free.</p>
-<p>Starting from v.1.9, jWeatherByIP is includes the ability to show the weather on the Google Map.</p>
-<p>Starting from v.1.13, jWeatherByIP can use Dark Sky weather station. In this case, you can use your icons to display the weather status. Icons are located in the 'img' directory.</p>
-<p>v.1.14: Added support for geoPlugin (geoplugin.com) and display of weather conditions for static geographical coordinates.</p>
+<p><h2>jWeather by ip</strong></h2>
+<p style="font-style:italic; border:2px solid green;padding:10px;">Masterpro studio bring projects to life using most recent tools and techniques, modern CMS and E-Commerce solutions. Welcome.</p>
+<p>The module <strong>jWeather by ip</strong> allows you to choose between WorldWeatherOnline, Dark Sky and OpenWeatherMap, and between IPGeolocation.io, Geoplugin.com, REST API SypexGeo and binary file SypexGeo.</p>
+<p><strong>Attention! Using a SypexGeo is not recommended.</strong></p>
+<ul>
+<li>Starting from v.1.9, jWeatherByIP is includes the ability to show the weather on the Google Map.</li>
+<li>Starting from v.1.13, jWeatherByIP can use Dark Sky weather station. In this case, you can use your icons to display the weather status. Icons are located in the 'img' directory.</li>
+<li>v.1.14: Added support for geoPlugin (geoplugin.com) and display of weather conditions for static geographical coordinates.</li>
+<li>v.1.15: Added support for Yandex Map.</li>
+</ul>
 <p><strong>Getting Started, step by step:</strong></p>
 <ol>
 <li>Install module.</li>
@@ -26,8 +31,8 @@
 <li>Go to "Module Manager" ->  "jWeather by ip", enter your api_keys, select the required options and turn on the module.</li>
 <li>Enjoy!</li>
 </ol>
-<p><a href="http://masterpro.ws/jweather-by-ip-pogoda-po-ip-dlya-joomla" target="_blank">Learn more at <strong>the Weather by ip</strong> project website.</a></p>
-<p><strong>jWeather by ip</strong> module is released under the <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GNU/GPL license.</a></p>]]></description>
+<p><strong>jWeather by ip</strong> module is released under the GNU/GPL license.</a></p>
+<p><a href="http://masterpro.ws/jweather-by-ip-pogoda-po-ip-dlya-joomla" target="_blank">Learn more</a></p>]]></description>
    <updateservers>
       <server type="extension" priority="1" name="Masterpro project">https://masterpro.ws/geo/updates/jweather.xml</server>
    </updateservers>
@@ -46,11 +51,11 @@
    <config>
       <fields name="params">
          <fieldset name="basic">
-            <field name="google_map" type="radio" default="0" label="GOOGLEMAP" description="GOOGLEMAP_DESC" class="btn-group">
+            <field name="map" type="list" default="0" label="MAP" description="MAP_DESC" class="btn-group">
                <option value="0">Нет</option>
-               <option value="20">Да</option>
+               <option value="21">Yandex Map</option>
+               <option value="20">Google Map</option>
             </field>
-            <field type="spacer" hr="true" />
             <field name="api_choose" type="list" default="1" label="Select API" description="CHOOSE_DESK">
                <option value="0">SypexGeo local</option>
                <option value="1">SypexGeo REST API</option>
@@ -68,7 +73,8 @@
             <field name="api_key_owm" type="text" default="" label="OPENWEATHERMAP_KEY" description="OPENWEATHERMAP_DESK" showon="weather_source_choose:1" />
             <field name="api_key_dsky" type="text" default="" label="DARKSKY_KEY" description="DARKSKY_DESK" showon="weather_source_choose:2" />
             <field name="api_key_geoloc" type="text" default="" label="IPGEOLOCATION_KEY" description="IPGEOLOCATION_DESK" showon="api_choose:2" />
-            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" showon="google_map:20" />
+            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" showon="map:20" />
+            <field name="api_yandexmap" type="text" default="" label="YANDEXMAP_KEY" description="YANDEXMAP_DESC" showon="map:21" />
             <field name="lat" type="text" default="48.85341" label="LAT" description="LAT_DESC" showon="api_choose:3" />
             <field name="lon" type="text" default="2.3488" label="LON" description="LON_DESC" showon="api_choose:3" />
          </fieldset>
@@ -77,14 +83,15 @@
                <option value="0">Нет</option>
                <option value="1">Да</option>
             </field>
-            <field name="color_weather" type="color" default="#caebe4" label="COLOR_FONT" description="COLOR_FONT_DESC" />
-            <field name="font_size_weather" type="text" default="90%" label="FONT_SIZE_WEATHER" description="FONT_SIZE_WEATHER_DESC" />
+            <field name="color_weather" type="color" default="#caebe4" label="COLOR_FONT" description="COLOR_FONT_DESC" showon="map!:21"/>
+            <field name="font_size_weather" type="text" default="90%" label="FONT_SIZE_WEATHER" description="FONT_SIZE_WEATHER_DESC" showon="map:0" />
             <field name="good_day" type="text" default="Good day, " label="GOOD_DAY" description="GOOD_DAY_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="good_evening" type="text" default="Good evening, " label="GOOD_EVENING" description="GOOD_EVENING_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="good_night" type="text" default="Good night, " label="GOOD_NIGHT" description="GOOD_NIGHT_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="good_morning" type="text" default="Good morning, " label="GOOD_MORNING" description="GOOD_MORNING_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="color_title" type="color" default="#e3e388" label="COLOR_FONT_GREETING" description="COLOR_FONT_GREETING_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="font_size_title" type="text" default="110%" label="FONT_SIZE_GREETING" description="FONT_SIZE_GREETING_DESC" showon="greeting:1[AND]api_choose!:3" />
+            <field name="height_map" type="text" default="350px" label="HEIGHT_MAP" description="HEIGHT_MAP_DESC" showon="map!:0" />
          </fieldset>
          <fieldset name="weather_display_options">
             <field name="img" type="radio" default="1" label="DISPLAY_IMG" description="DISPLAY_IMG_DESC" class="btn-group">

@@ -1,18 +1,19 @@
 <?php
-   /**
-   * jWeather by ip. Module for Joomla 3.x
-   * @version $Id: mod_jweather_by_ip.php 2015-12-31 $
-   * @package: jWeather by ip
-   * ===================================================
-   * @author
-   * Name: Masterpro project, www.masterpro.ws
-   * Email: info@masterpro.ws
-   * Url: http://www.masterpro.ws
-   * ===================================================
-   * @copyright (C) 2015 Alex Smirnov. All rights reserved.
-   * @license GNU GPL 2.0 (http://www.gnu.org/licenses/gpl-2.0.html)
-   **/
-   /*
+/**
+ * jWeather by ip. Module for Joomla 3.x
+ * @version $Id: mod_jweather_by_ip.php 2015-12-31 $
+ * @package: jWeather by ip
+ * ===================================================
+ * @author
+ * Name: Masterpro project, www.masterpro.ws
+ * Email: info@masterpro.ws
+ * Url: http://www.masterpro.ws
+ * ===================================================
+ * @copyright (C) 2015 Alex Smirnov. All rights reserved.
+ * @license GNU GPL 2.0 (http://www.gnu.org/licenses/gpl-2.0.html)
+ *
+ */
+/*
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
    version 2 as published by the Free Software Foundation.
@@ -23,45 +24,89 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-   */
-   // No direct access
-   defined('_JEXEC') or die; 
-   
-   if ($params->get('greeting') == 1) {
-   require_once $_SERVER['DOCUMENT_ROOT']."/modules/mod_jweather_by_ip/src/greeting.js";
-   }
-   require_once $_SERVER['DOCUMENT_ROOT']."/modules/mod_jweather_by_ip/src/style.css";
-   ?>
-<div class="weather_mstp">
+*/
+// No direct access
+defined('_JEXEC') or die;
+
+if ($greeting == 1)
+{
+?>
+<div style="color:<?php echo $color_title;?>;font-size:<?php echo $font_size_title;?>;">
+   <script>
+      var h=(new Date()).getHours();
+      if (h > 23 || h <7) document.write("<?php
+         echo $good_night . $start[2];
+         ?>");
+      if (h > 6 && h < 12) document.write("<?php
+         echo $good_morning . $start[2];
+         ?>");
+      if (h > 11 && h < 19) document.write("<?php
+         echo $good_day . $start[2];
+         ?>");
+      if (h > 18 && h < 24) document. write("<?php
+         echo $good_evening . $start[2];
+         ?>"); 
+   </script>
+</div>
 <?php
-   $html = "<table>";
-   $i = 1;
-   if (in_array(1, $values)) {
-   if ($params->get('weather_source_choose') == 1) {
-   $html .= '<tr><td><img src="https://openweathermap.org/img/w/'.$source[0].'.png" title="'.$source[1].'"></td></tr>';
-   }
-   elseif ($params->get('weather_source_choose') == 2) {
-   $html .= '<tr><td><img src="/modules/mod_jweather_by_ip/img/icons/'.$source[0].'.png" title="'.$source[1].'"></td></tr>';
-   }
-   else {
-   $html .= '<tr><td><img src="'.$source[0].'" title="'.$source[1].'"></td></tr>';
-   }
-   }
-   foreach (array_combine($names, $source) as $names =>  $source):
-       $html .= "<tr>";
-      if (in_array($i, $values) and $i > 1) {
-       $html .= "<td>".$names."</td>";
-       $html .= "<td>".$source."</td>";
-       }
-       $html .= "</tr>";
-       $i++;
-   endforeach;
-   $html .= "</table>";
-   if ($params->get('google_map') == 0) {
-   echo $html;
-   } else {
-   ?>
-<div id="map"></div>
+}
+echo '<div style="color:' . $color_weather . ';font-size:' . $font_size_weather . ';">';
+$html = "<table>";
+$i = 1;
+if (in_array(1, $values))
+{
+    switch ($weather_source_choose)
+    {
+        case 1:
+            $html .= '<tr><td><img src="https://openweathermap.org/img/w/' . $source[0] . '.png" title="' . $source[1] . '"></td></tr>';
+        break;
+        case 2:
+            $html .= '<tr><td><img src="/modules/mod_jweather_by_ip/img/icons/' . $source[0] . '.png" title="' . $source[1] . '"></td></tr>';
+        break;
+        default:
+            $html .= '<tr><td><img src="' . str_replace("http", "https", $source[0]) . '" title="' . $source[1] . '"></td></tr>';
+    }
+}
+foreach (array_combine($names, $source) as $names => $source):
+    $html .= "<tr>";
+    if (in_array($i, $values) and $i > 1)
+    {
+        $html .= "<td>" . $names . "</td>";
+        $html .= "<td>" . $source . "</td>";
+    }
+    $html .= "</tr>";
+    $i++;
+endforeach;
+$html .= "</table>";
+
+switch ($map)
+{
+    case 21:
+?>
+   <div id="map" style="width:100%;height:<?php echo $height_map;?>;"></div>
+   <script src="https://api-maps.yandex.ru/2.1/?lang=<?php echo $lang; ?>&apikey=<?php echo $api_yandexmap; ?>"></script>
+   <script type="text/javascript"> 
+      var myMap; 
+      ymaps.ready(init); 
+      function init () {
+      var myMap = new ymaps.Map("map", { 
+      center: [<?php echo $start[0] . ',' . $start[1]; ?>], 
+      zoom: 8,
+      controls: ['zoomControl','fullscreenControl']
+      }); 
+      myPlacemark = new ymaps.Placemark([<?php echo $start[0] . ',' . $start[1]; ?>], {
+      balloonContent: '<?php echo $html ?>'}); 
+      myMap.geoObjects 
+      .add(myPlacemark);
+      myPlacemark.balloon.open();
+      } 
+   </script> 
+
+<?php
+    break;
+    case 20:
+?>
+<div id="map" style="width:100%;height:<?php echo $height_map;?>;"></div>
 <script>
    function initMap() {
      var coord = {lat: <?php echo $start[0]; ?>, lng: <?php echo $start[1]; ?>};
@@ -87,8 +132,11 @@
    }
 </script>
 <script async defer
-   src="https://maps.googleapis.com/maps/api/js?key=<?php echo $params->get('api_googlemap'); ?>&callback=initMap&language=<?php echo $lang; ?>"></script>
+   src="https://maps.googleapis.com/maps/api/js?key=<?php echo $api_googlemap; ?>&callback=initMap&language=<?php echo $lang; ?>"></script>
 <?php
-   }
+    break;
+    default:
+        echo $html;
+}
 ?>
 </div>
