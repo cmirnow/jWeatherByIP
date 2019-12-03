@@ -9,7 +9,7 @@
  * Email: info@masterpro.ws
  * Url: http://www.masterpro.ws
  * ===================================================
- * @copyright (C) 2015 Alex Smirnov. All rights reserved.
+ * @copyright (C) 2015 Alexei Smirnov. All rights reserved.
  * @license GNU GPL 2.0 (http://www.gnu.org/licenses/gpl-2.0.html)
  *
  */
@@ -54,29 +54,70 @@ class ModJWeatherByIp
 
     public static function getSource($params)
     {
-        if ($params->get('weather_source_choose') == 1)
+        $x = $params->get('weather_source_choose');
+        switch ($x)
         {
+            case 1:
             $api_key = $params->get('api_key_owm');
             $num_of_days = 1;
-            $json = file_get_contents('http://api.openweathermap.org/data/2.5/weather?lat=' . self::getStart($params) [0] . '&lon=' . self::getStart($params) [1] . '&appid=' . $api_key . '&units=metric');
+            $json = file_get_contents('https://api.openweathermap.org/data/2.5/weather?lat=' . self::getStart($params) [0] . '&lon=' . self::getStart($params) [1] . '&appid=' . $api_key . '&units=metric');
             $obj = json_decode($json, true);
             return [$obj['weather']['0']['icon'], $obj['weather']['0']['main'], $obj['main']['temp'], $obj['wind']['speed'], $obj['main']['pressure'], $obj['main']['humidity'], $obj['clouds']['all'], $obj['visibility'], $obj['weather']['0']['description']];
-        }
-        elseif ($params->get('weather_source_choose') == 2)
-        {
+            break;
+            case 2:
             $api_key = $params->get('api_key_dsky');
             $json = file_get_contents('https://api.darksky.net/forecast/' . $api_key . '/' . self::getStart($params) [0] . ',' . self::getStart($params) [1] . '?units=auto&exclude=minutely,hourly,daily,alerts,flags');
             $obj = json_decode($json, true);
             return [$obj['currently']['icon'], $obj['currently']['summary'], $obj['currently']['temperature'], $obj['currently']['windSpeed'], $obj['currently']['pressure'], $obj['currently']['humidity'], $obj['currently']['cloudCover'], $obj['currently']['visibility'], $obj['currently']['summary']];
-        }
-        else
-        {
+            break;
+            case 3:
+            $api_key = $params->get('api_key');
+            /* $num_of_days = 1; */
+            $coord = self::getStart($params);
+            unset($coord[2]);
+            $loc_string = implode(',', $coord);
+            $basicurl = sprintf('https://api.worldweatheronline.com/premium/v1/marine.ashx?key=%s&q=%s&tp=24', $api_key, $loc_string);
+            $xml = simplexml_load_file($basicurl);
+            return [$xml
+                ->weather->hourly->weatherIconUrl, $xml
+                ->weather->hourly->weatherDesc, $xml
+                ->weather->hourly->tempC, $xml
+                ->weather->hourly->windspeedKmph, $xml
+                ->weather->hourly->pressure, $xml
+                ->weather->hourly->humidity, $xml
+                ->weather->hourly->cloudcover, $xml
+                ->weather->hourly->visibility, $xml
+                ->weather->hourly->weatherDesc, $xml
+                ->weather
+                ->astronomy->sunrise, $xml
+                ->weather
+                ->astronomy->sunset, $xml
+                ->weather
+                ->astronomy->moonrise, $xml
+                ->weather
+                ->astronomy->moonset, $xml
+                ->weather->date, $xml
+                ->weather->hourly->tempF, $xml
+                ->weather
+                ->astronomy->moon_phase, $xml
+                ->weather
+                ->astronomy->moon_illumination, $xml
+                ->weather->hourly->sigHeight_m, $xml
+                ->weather->hourly->swellHeight_m, $xml
+                ->weather->hourly->swellHeight_ft, $xml
+                ->weather->hourly->swellDir, $xml
+                ->weather->hourly->swellDir16Point, $xml
+                ->weather->hourly->swellPeriod_secs, $xml
+                ->weather->hourly->waterTemp_C, $xml
+                ->weather->hourly->waterTemp_F];
+            break;
+            default:
             $api_key = $params->get('api_key');
             $num_of_days = 1;
             $coord = self::getStart($params);
             unset($coord[2]);
             $loc_string = implode(',', $coord);
-            $basicurl = sprintf('http://api2.worldweatheronline.com/premium/v1/weather.ashx?key=%s&q=%s&num_of_days=%s', $api_key, $loc_string, intval($num_of_days));
+            $basicurl = sprintf('https://api2.worldweatheronline.com/premium/v1/weather.ashx?key=%s&q=%s&num_of_days=%s', $api_key, $loc_string, intval($num_of_days));
             $xml = simplexml_load_file($basicurl);
             return [$xml
                 ->current_condition->weatherIconUrl, $xml
@@ -97,35 +138,17 @@ class ModJWeatherByIp
                 ->weather
                 ->astronomy->moonset, $xml
                 ->weather->date, $xml
-                ->current_condition->temp_F];
+                ->current_condition->temp_F, $xml
+                ->weather
+                ->astronomy->moon_phase, $xml
+                ->weather
+                ->astronomy->moon_illumination];
         }
     }
 
     public static function getNames($params)
     {
-        if ($params->get('weather_source_choose') == 0)
-        {
-            return array(
-                JText::_('WEATHER_ICON') ,
-                JText::_('WEATHER_MAIN') ,
-                JText::_('TEMPERC') ,
-                JText::_('WINDSPEEDKMPH_FR') ,
-                JText::_('PRESSURE_FR') ,
-                JText::_('HUMIDITY_FR') ,
-                JText::_('CLOUDCOVER_FR') ,
-                JText::_('VISIBILITY_FR') ,
-                JText::_('WEATHER_DESC') ,
-                JText::_('SUNRISE_FR') ,
-                JText::_('SUNSET_FR') ,
-                JText::_('MOONRISE_FR') ,
-                JText::_('MOONSET_FR') ,
-                JText::_('TODAYSDATE') ,
-                JText::_('TEMPER_FR')
-            );
-        }
-        else
-        {
-            return array(
+            $main = array(
                 JText::_('WEATHER_ICON') ,
                 JText::_('WEATHER_MAIN') ,
                 JText::_('TEMPERC') ,
@@ -135,19 +158,63 @@ class ModJWeatherByIp
                 JText::_('CLOUDCOVER_FR') ,
                 JText::_('VISIBILITY_FR') ,
                 JText::_('WEATHER_DESC')
-            );
+                );
+            $wwo0 = array(
+                JText::_('SUNRISE_FR') ,
+                JText::_('SUNSET_FR') ,
+                JText::_('MOONRISE_FR') ,
+                JText::_('MOONSET_FR') ,
+                JText::_('TODAYSDATE') ,
+                JText::_('TEMPER_FR') ,
+                JText::_('MOONPHASE') ,
+                JText::_('MOONILLUMINATION')
+                );
+            $wwo3 = array(
+                JText::_('SIGHEIGHTM') ,
+                JText::_('SWELLHEIGHTM') ,
+                JText::_('SWELLHEIGHTFT') ,
+                JText::_('SWELLDIR') ,
+                JText::_('SWELLDIR16POINT') ,
+                JText::_('SWELLPERIODSECS') ,
+                JText::_('WATERTEMPC') ,
+                JText::_('WATERTEMPF')
+                );
+            $x = $params->get('weather_source_choose');
+        switch ($x)
+        {
+            case 0:
+                return array_merge($main,$wwo0);
+            break;
+            case 3:
+                return array_merge($main,$wwo0,$wwo3);
+            break;
+            default:
+                return $main;
         }
     }
 
     public static function getValues($params)
     {
-        if ($params->get('weather_source_choose') == 0)
+            $main = array(
+                $params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc')
+                );
+            $wwo0 = array(
+                $params->get('sunrise') , $params->get('sunset') , $params->get('moonrise') , $params->get('moonset') , $params->get('date') , $params->get('temp_F') , $params->get('moonphase') , $params->get('moonillumination')
+                );
+            $wwo3 = array(
+                $params->get('sigheightm') , $params->get('swellheightm') , $params->get('swellheightft') , $params->get('swelldir') , $params->get('swelldir16point') , $params->get('swellperiodsecs') , $params->get('watertempc') , $params->get('watertempf')
+                );
+            $x = $params->get('weather_source_choose');
+        switch ($x)
         {
-            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') , $params->get('sunrise') , $params->get('sunset') , $params->get('moonrise') , $params->get('moonset') , $params->get('date') , $params->get('temp_F') ];
-        }
-        else
-        {
-            return [$params->get('img') , $params->get('title') , $params->get('temp_C') , $params->get('windspeedKmph') , $params->get('pressure') , $params->get('humidity') , $params->get('cloudcover') , $params->get('visibility') , $params->get('weatherDesc') ];
+            case 0:
+                return array_merge($main,$wwo0);
+            break;
+            case 3:
+                return array_merge($main,$wwo0,$wwo3);
+            break;
+            default:
+                return $main;
         }
     }
 

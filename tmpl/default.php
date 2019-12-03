@@ -9,7 +9,7 @@
  * Email: info@masterpro.ws
  * Url: http://www.masterpro.ws
  * ===================================================
- * @copyright (C) 2015 Alex Smirnov. All rights reserved.
+ * @copyright (C) 2015 Alexei Smirnov. All rights reserved.
  * @license GNU GPL 2.0 (http://www.gnu.org/licenses/gpl-2.0.html)
  *
  */
@@ -81,15 +81,15 @@ $html .= "</table>";
 
 switch ($map)
 {
-    case 21:
+    case 31:
 ?>
-   <div id="map" style="width:100%;height:<?php echo $height_map;?>;"></div>
+   <div id="map_ya" style="width:100%;height:<?php echo $height_map;?>;"></div>
    <script src="https://api-maps.yandex.ru/2.1/?lang=<?php echo $lang; ?>&apikey=<?php echo $api_yandexmap; ?>"></script>
    <script type="text/javascript"> 
       var myMap; 
       ymaps.ready(init); 
       function init () {
-      var myMap = new ymaps.Map("map", { 
+      var myMap = new ymaps.Map("map_ya", { 
       center: [<?php echo $start[0] . ',' . $start[1]; ?>], 
       zoom: 8,
       controls: ['zoomControl','fullscreenControl']
@@ -104,7 +104,7 @@ switch ($map)
 
 <?php
     break;
-    case 20:
+    case 30:
 ?>
 <div id="map" style="width:100%;height:<?php echo $height_map;?>;"></div>
 <script>

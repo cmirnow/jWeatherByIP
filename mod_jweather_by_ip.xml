@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="module" version="2.5.0" method="upgrade">
    <name>jWeather by ip</name>
-   <creationDate>August 19, 2019</creationDate>
+   <creationDate>December 03, 2019</creationDate>
    <author>Masterpro project</author>
    <authorEmail>info@masterpro.ws</authorEmail>
    <authorUrl>http://www.masterpro.ws</authorUrl>
-   <copyright>Copyright 2015 Alexey Smirnov. All rights reserved.</copyright>
+   <copyright>Copyright 2015 Alexei Smirnov. All rights reserved.</copyright>
    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-   <version>1.16</version>
+   <version>1.18</version>
    <description><![CDATA[<p><a href="http://masterpro.ws" target="_blank"><img style="margin-bottom: 15px; margin-top: 15px;" src="/modules/mod_jweather_by_ip/img/logo.png" alt="Masterpro.ws" /></a></p>
 <p><h2>jWeather by ip</strong></h2>
 <p style="font-style:italic; border:2px solid green;padding:10px;">Masterpro studio bring projects to life using most recent tools and techniques, modern CMS and E-Commerce solutions. Welcome.</p>
 <p>The module <strong>jWeather by ip</strong> allows you to choose between WorldWeatherOnline, Dark Sky and OpenWeatherMap, and between IPGeolocation.io, Geoplugin.com, REST API SypexGeo and binary file SypexGeo.</p>
 <p><strong>Attention! Using a SypexGeo is not recommended.</strong></p>
 <ul>
-<li>Starting from v.1.9, jWeatherByIP is includes the ability to show the weather on the Google Map.</li>
-<li>Starting from v.1.13, jWeatherByIP can use Dark Sky weather station. In this case, you can use your icons to display the weather status. Icons are located in the 'img' directory.</li>
-<li>v.1.14: Added support for geoPlugin (geoplugin.com) and display of weather conditions for static geographical coordinates.</li>
+<li>v.1.17: Added MARINE, SAILING AND SURFING WEATHER WorldWeatherOnline API.</li>
 <li>v.1.15: Added support for Yandex Map.</li>
+<li>v.1.14: Added support for geoPlugin (geoplugin.com) and display of weather conditions for static geographical coordinates.</li>
+<li>Starting from v.1.13, jWeatherByIP can use Dark Sky weather station. In this case, you can use your icons to display the weather status. Icons are located in the 'img' directory.</li>
+<li>Starting from v.1.9, jWeatherByIP is includes the ability to show the weather on the Google Map.</li>
 </ul>
 <p><strong>Getting Started, step by step:</strong></p>
 <ol>
@@ -53,8 +54,8 @@
          <fieldset name="basic">
             <field name="map" type="list" default="0" label="MAP" description="MAP_DESC" class="btn-group">
                <option value="0">Нет</option>
-               <option value="21">Yandex Map</option>
-               <option value="20">Google Map</option>
+               <option value="31">Yandex Map</option>
+               <option value="30">Google Map</option>
             </field>
             <field name="api_choose" type="list" default="1" label="Select API" description="CHOOSE_DESK">
                <option value="0">SypexGeo local</option>
@@ -65,16 +66,17 @@
             </field>
             <field name="weather_source_choose" type="list" default="0" label="Select weather source" description="CHOOSE_SOURCE" class="btn-group">
                <option value="0">WorldWeatherOnline</option>
+               <option value="3">WorldWeatherOnline: Marine, Sailing and Surfing Weather</option>
                <option value="1">OpenWeatherMap</option>
                <option value="2">Dark Sky</option>
             </field>
-            <field name="api_key" type="text" default="" label="API_KEY" description="API_KEY_DESC" showon="weather_source_choose:0" />
+            <field name="api_key" type="text" default="" label="API_KEY" description="API_KEY_DESC" showon="weather_source_choose:0[OR]weather_source_choose:3" />
             <field name="api_key_sypexgeo" type="text" default="" label="SGKEY" description="SGKEY_DESK" showon="api_choose:1" />
             <field name="api_key_owm" type="text" default="" label="OPENWEATHERMAP_KEY" description="OPENWEATHERMAP_DESK" showon="weather_source_choose:1" />
             <field name="api_key_dsky" type="text" default="" label="DARKSKY_KEY" description="DARKSKY_DESK" showon="weather_source_choose:2" />
             <field name="api_key_geoloc" type="text" default="" label="IPGEOLOCATION_KEY" description="IPGEOLOCATION_DESK" showon="api_choose:2" />
-            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" showon="map:20" />
-            <field name="api_yandexmap" type="text" default="" label="YANDEXMAP_KEY" description="YANDEXMAP_DESC" showon="map:21" />
+            <field name="api_googlemap" type="text" default="" label="GOOGLEMAP_KEY" description="GOOGLEMAP_DESC" showon="map:30" />
+            <field name="api_yandexmap" type="text" default="" label="YANDEXMAP_KEY" description="YANDEXMAP_DESC" showon="map:31" />
             <field name="lat" type="text" default="48.85341" label="LAT" description="LAT_DESC" showon="api_choose:3" />
             <field name="lon" type="text" default="2.3488" label="LON" description="LON_DESC" showon="api_choose:3" />
          </fieldset>
@@ -83,7 +85,7 @@
                <option value="0">Нет</option>
                <option value="1">Да</option>
             </field>
-            <field name="color_weather" type="color" default="#caebe4" label="COLOR_FONT" description="COLOR_FONT_DESC" showon="map!:21"/>
+            <field name="color_weather" type="color" default="#caebe4" label="COLOR_FONT" description="COLOR_FONT_DESC" showon="map!:31"/>
             <field name="font_size_weather" type="text" default="90%" label="FONT_SIZE_WEATHER" description="FONT_SIZE_WEATHER_DESC" showon="map:0" />
             <field name="good_day" type="text" default="Good day, " label="GOOD_DAY" description="GOOD_DAY_DESC" showon="greeting:1[AND]api_choose!:3" />
             <field name="good_evening" type="text" default="Good evening, " label="GOOD_EVENING" description="GOOD_EVENING_DESC" showon="greeting:1[AND]api_choose!:3" />
@@ -131,30 +133,72 @@
                <option value="9">Да</option>
             </field>
             <field type="spacer" hr="true" />
-            <field name="temp_F" type="radio" default="0" label="TEMPERF" description="TEMPERF_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="temp_F" type="radio" default="0" label="TEMPERF" description="TEMPERF_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="15">Да</option>
             </field>
-            <field name="date" type="radio" default="0" label="TODAYSDATE" description="TODAYSDATE_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="date" type="radio" default="0" label="TODAYSDATE" description="TODAYSDATE_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="14">Да</option>
             </field>
-            <field name="sunrise" type="radio" default="0" label="SUNRISE" description="SUNRISE_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="sunrise" type="radio" default="0" label="SUNRISE" description="SUNRISE_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="10">Да</option>
             </field>
-            <field name="sunset" type="radio" default="0" label="SUNSET" description="SUNSET_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="sunset" type="radio" default="0" label="SUNSET" description="SUNSET_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="11">Да</option>
             </field>
-            <field name="moonrise" type="radio" default="0" label="MOONRISE" description="MOONRISE_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="moonrise" type="radio" default="0" label="MOONRISE" description="MOONRISE_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="12">Да</option>
             </field>
-            <field name="moonset" type="radio" default="0" label="MOONSET" description="MOONSET_DESC" class="btn-group" showon="weather_source_choose:0">
+            <field name="moonset" type="radio" default="0" label="MOONSET" description="MOONSET_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
                <option value="0">Нет</option>
                <option value="13">Да</option>
             </field>
+            <field name="moonphase" type="radio" default="0" label="MOONPHASE" description="MOONPHASE_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="16">Да</option>
+            </field>
+            <field name="moonillumination" type="radio" default="0" label="MOONILLUMINATION" description="MOONILLUMINATION_DESC" class="btn-group" showon="weather_source_choose:0[OR]weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="17">Да</option>
+            </field>
+            <field type="spacer" hr="true" />
+            <field name="sigheightm" type="radio" default="0" label="SIGHEIGHTM" description="SIGHEIGHTM_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="18">Да</option>
+            </field>
+            <field name="swellheightm" type="radio" default="0" label="SWELLHEIGHTM" description="SWELLHEIGHTM_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="19">Да</option>
+            </field>
+            <field name="swellheightft" type="radio" default="0" label="SWELLHEIGHTFT" description="SWELLHEIGHTFT_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="20">Да</option>
+            </field>
+            <field name="swelldir" type="radio" default="0" label="SWELLDIR" description="SWELLDIR_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="21">Да</option>
+            </field>
+            <field name="swelldir16point" type="radio" default="0" label="SWELLDIR16POINT" description="SWELLDIR16POINT_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="22">Да</option>
+            </field>
+            <field name="swellperiodsecs" type="radio" default="0" label="SWELLPERIODSECS" description="SWELLPERIODSECS_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="23">Да</option>
+            </field>
+            <field name="watertempc" type="radio" default="0" label="WATERTEMPC" description="WATERTEMPC_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="24">Да</option>
+            </field>
+            <field name="watertempf" type="radio" default="0" label="WATERTEMPF" description="WATERTEMPF_DESC" class="btn-group" showon="weather_source_choose:3">
+               <option value="0">Нет</option>
+               <option value="25">Да</option>
+            </field>
+            
          </fieldset>
          <fieldset name="advanced">
             <field name="layout" type="modulelayout" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
