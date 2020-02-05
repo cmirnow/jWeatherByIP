@@ -51,6 +51,12 @@ if ($greeting == 1)
 <?php
 }
 echo '<div style="color:' . $color_weather . ';font-size:' . $font_size_weather . ';">';
+if ($weather_source_choose == 4)
+{
+$html = $html_for_balloon;
+}
+else
+{
 $html = "<table>";
 $i = 1;
 if (in_array(1, $values))
@@ -78,7 +84,7 @@ foreach (array_combine($names, $source) as $names => $source):
     $i++;
 endforeach;
 $html .= "</table>";
-
+}
 switch ($map)
 {
     case 31:

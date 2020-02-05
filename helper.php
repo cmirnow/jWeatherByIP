@@ -57,6 +57,39 @@ class ModJWeatherByIp
         $x = $params->get('weather_source_choose');
         switch ($x)
         {
+            case 0:
+            $api_key = $params->get('api_key');
+            $num_of_days = 1;
+            $coord = self::getStart($params);
+            unset($coord[2]);
+            $loc_string = implode(',', $coord);
+            $basicurl = sprintf('https://api2.worldweatheronline.com/premium/v1/weather.ashx?key=%s&q=%s&num_of_days=%s', $api_key, $loc_string, intval($num_of_days));
+            $xml = simplexml_load_file($basicurl);
+            return [$xml
+                ->current_condition->weatherIconUrl, $xml
+                ->current_condition->weatherDesc, $xml
+                ->current_condition->temp_C, $xml
+                ->current_condition->windspeedKmph, $xml
+                ->current_condition->pressure, $xml
+                ->current_condition->humidity, $xml
+                ->current_condition->cloudcover, $xml
+                ->current_condition->visibility, $xml
+                ->current_condition->weatherDesc, $xml
+                ->weather
+                ->astronomy->sunrise, $xml
+                ->weather
+                ->astronomy->sunset, $xml
+                ->weather
+                ->astronomy->moonrise, $xml
+                ->weather
+                ->astronomy->moonset, $xml
+                ->weather->date, $xml
+                ->current_condition->temp_F, $xml
+                ->weather
+                ->astronomy->moon_phase, $xml
+                ->weather
+                ->astronomy->moon_illumination];
+            break;
             case 1:
             $api_key = $params->get('api_key_owm');
             $num_of_days = 1;
@@ -112,37 +145,7 @@ class ModJWeatherByIp
                 ->weather->hourly->waterTemp_F];
             break;
             default:
-            $api_key = $params->get('api_key');
-            $num_of_days = 1;
-            $coord = self::getStart($params);
-            unset($coord[2]);
-            $loc_string = implode(',', $coord);
-            $basicurl = sprintf('https://api2.worldweatheronline.com/premium/v1/weather.ashx?key=%s&q=%s&num_of_days=%s', $api_key, $loc_string, intval($num_of_days));
-            $xml = simplexml_load_file($basicurl);
-            return [$xml
-                ->current_condition->weatherIconUrl, $xml
-                ->current_condition->weatherDesc, $xml
-                ->current_condition->temp_C, $xml
-                ->current_condition->windspeedKmph, $xml
-                ->current_condition->pressure, $xml
-                ->current_condition->humidity, $xml
-                ->current_condition->cloudcover, $xml
-                ->current_condition->visibility, $xml
-                ->current_condition->weatherDesc, $xml
-                ->weather
-                ->astronomy->sunrise, $xml
-                ->weather
-                ->astronomy->sunset, $xml
-                ->weather
-                ->astronomy->moonrise, $xml
-                ->weather
-                ->astronomy->moonset, $xml
-                ->weather->date, $xml
-                ->current_condition->temp_F, $xml
-                ->weather
-                ->astronomy->moon_phase, $xml
-                ->weather
-                ->astronomy->moon_illumination];
+            break;
         }
     }
 

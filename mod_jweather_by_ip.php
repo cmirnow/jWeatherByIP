@@ -41,6 +41,7 @@ $api_googlemap = $params->get('api_googlemap');
 $weather_source_choose = $params->get('weather_source_choose');
 $greeting = $params->get('greeting');
 $map = $params->get('map');
+$html_for_balloon = $params->get('html_for_balloon');
 
 $start = ModJWeatherByIp::getStart($params);
 $names = ModJWeatherByIp::getNames($params);

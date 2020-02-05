@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="module" version="2.5.0" method="upgrade">
    <name>jWeather by ip</name>
-   <creationDate>December 03, 2019</creationDate>
+   <creationDate>February 04, 2020</creationDate>
    <author>Masterpro project</author>
    <authorEmail>info@masterpro.ws</authorEmail>
    <authorUrl>http://www.masterpro.ws</authorUrl>
    <copyright>Copyright 2015 Alexei Smirnov. All rights reserved.</copyright>
    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-   <version>1.18</version>
+   <version>1.19</version>
    <description><![CDATA[<p><a href="http://masterpro.ws" target="_blank"><img style="margin-bottom: 15px; margin-top: 15px;" src="/modules/mod_jweather_by_ip/img/logo.png" alt="Masterpro.ws" /></a></p>
 <p><h2>jWeather by ip</strong></h2>
 <p style="font-style:italic; border:2px solid green;padding:10px;">Masterpro studio bring projects to life using most recent tools and techniques, modern CMS and E-Commerce solutions. Welcome.</p>
@@ -69,6 +69,7 @@
                <option value="3">WorldWeatherOnline: Marine, Sailing and Surfing Weather</option>
                <option value="1">OpenWeatherMap</option>
                <option value="2">Dark Sky</option>
+               <option value="4">None</option>
             </field>
             <field name="api_key" type="text" default="" label="API_KEY" description="API_KEY_DESC" showon="weather_source_choose:0[OR]weather_source_choose:3" />
             <field name="api_key_sypexgeo" type="text" default="" label="SGKEY" description="SGKEY_DESK" showon="api_choose:1" />
@@ -79,6 +80,7 @@
             <field name="api_yandexmap" type="text" default="" label="YANDEXMAP_KEY" description="YANDEXMAP_DESC" showon="map:31" />
             <field name="lat" type="text" default="48.85341" label="LAT" description="LAT_DESC" showon="api_choose:3" />
             <field name="lon" type="text" default="2.3488" label="LON" description="LON_DESC" showon="api_choose:3" />
+            <field name="html_for_balloon" type="textarea" default="Enter some text or html" label="HTML_FOR_BALLOON" description="HTML_FOR_BALLOON_DESC" rows="5" cols="5" filter="raw" showon="weather_source_choose:4"/>
          </fieldset>
          <fieldset name="Greeting">
             <field name="greeting" type="radio" default="1" label="GREETING" description="GREETING_DESC" class="btn-group" showon="api_choose!:3">
