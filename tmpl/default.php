@@ -57,7 +57,7 @@ $html = $html_for_balloon;
 }
 else
 {
-$html = "<table>";
+$html = '<table class="jwbyip">';
 $i = 1;
 if (in_array(1, $values))
 {
@@ -74,22 +74,22 @@ if (in_array(1, $values))
     }
 }
 foreach (array_combine($names, $source) as $names => $source):
-    $html .= "<tr>";
+    $html .= '<tr>';
     if (in_array($i, $values) and $i > 1)
     {
-        $html .= "<td>" . $names . "</td>";
-        $html .= "<td>" . $source . "</td>";
+        $html .= '<td>' . $names . '</td>';
+        $html .= '<td>' . $source . '</td>';
     }
-    $html .= "</tr>";
+    $html .= '</tr>';
     $i++;
 endforeach;
-$html .= "</table>";
+$html .= '</table>';
 }
 switch ($map)
 {
     case 31:
 ?>
-   <div id="map_ya" style="width:100%;height:<?php echo $height_map;?>;"></div>
+   <div id="map_ya" style="width:100%;height:<?php echo $height_map; ?>"></div>
    <script src="https://api-maps.yandex.ru/2.1/?lang=<?php echo $lang; ?>&apikey=<?php echo $api_yandexmap; ?>"></script>
    <script type="text/javascript"> 
       var myMap; 
@@ -97,7 +97,7 @@ switch ($map)
       function init () {
       var myMap = new ymaps.Map("map_ya", { 
       center: [<?php echo $start[0] . ',' . $start[1]; ?>], 
-      zoom: 8,
+      zoom: <?php echo $zoom; ?>,
       controls: ['zoomControl','fullscreenControl']
       }); 
       myPlacemark = new ymaps.Placemark([<?php echo $start[0] . ',' . $start[1]; ?>], {
@@ -112,12 +112,12 @@ switch ($map)
     break;
     case 30:
 ?>
-<div id="map" style="width:100%;height:<?php echo $height_map;?>;"></div>
+<div id="map" style="width:100%;height:<?php echo $height_map; ?>"></div>
 <script>
    function initMap() {
      var coord = {lat: <?php echo $start[0]; ?>, lng: <?php echo $start[1]; ?>};
      var map = new google.maps.Map(document.getElementById('map'), {
-       zoom: 8,
+       zoom: <?php echo $zoom; ?>,
        center: coord
      });
      var contentString = '<div id="content">'+
@@ -146,3 +146,8 @@ switch ($map)
 }
 ?>
 </div>
+<style>
+table.jwbyip td {
+<?php echo $table_td_style ?>
+}
+</style>

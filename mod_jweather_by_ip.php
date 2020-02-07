@@ -42,7 +42,8 @@ $weather_source_choose = $params->get('weather_source_choose');
 $greeting = $params->get('greeting');
 $map = $params->get('map');
 $html_for_balloon = $params->get('html_for_balloon');
-
+$zoom = $params->get('zoom');
+$table_td_style = $params->get('table_td_style');
 $start = ModJWeatherByIp::getStart($params);
 $names = ModJWeatherByIp::getNames($params);
 $source = ModJWeatherByIp::getSource($params);
