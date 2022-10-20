@@ -70,7 +70,7 @@ if (in_array(1, $values))
             $html .= '<tr><td><img src="/modules/mod_jweather_by_ip/img/icons/' . $source[0] . '.png" title="' . $source[1] . '"></td></tr>';
         break;
         default:
-            $html .= '<tr><td><img src="' . str_replace("http", "https", $source[0]) . '" title="' . $source[1] . '"></td></tr>';
+            $html .= '<tr><td><img src="' . $source[0] . '" title="' . $source[1] . '"></td></tr>';
     }
 }
 foreach (array_combine($names, $source) as $names => $source):
